@@ -127,7 +127,7 @@ body { font-family: 'Inter', sans-serif; background-color: #FFF9EF; color: #263B
     /* CORREÇÃO DO "VS" NO CELULAR */
    /* Esconde o Emblema VS APENAS no celular */
     .vs-badge { 
-        display: none; 
+        display: none !important; 
     }
 
     .label-left, .label-right { position: relative; top: 0; left: 0; right: 0; transform: none; display: inline-block; margin-bottom: 10px; }
