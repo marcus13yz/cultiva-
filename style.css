@@ -64,12 +64,15 @@ body { font-family: 'Inter', sans-serif; background-color: #FFF9EF; color: #263B
 .stat-card p { font-size: 1.1rem; color: #263B2B; font-weight: 500; }
 
 /* Nossa Horta Section */
-.harvest-section { background-color: #FFC999; padding: 80px 40px; text-align: center; }
+.harvest-section { background-color: #fcf4ca; padding: 80px 40px; text-align: center; }
 .harvest-grid { display: flex; justify-content: center; gap: 30px; max-width: 1200px; margin: 0 auto; flex-wrap: wrap; }
 .harvest-card { background-color: transparent; border: 1px solid #263B2B; border-radius: 12px; width: 300px; text-align: left; padding: 15px; }
 .harvest-card .card-img { width: 100%; height: 200px; border-radius: 8px; margin-bottom: 15px; }
 .harvest-card h4 { font-size: 1.2rem; margin-bottom: 10px; }
 .harvest-card p { font-size: 0.95rem; color: #263B2B; line-height: 1.5; }
+#nossa-horta .section-title {
+    color: #f8be67; /* Ou outra cor à sua escolha */
+}
 
 /* Receitas / Dicas Section */
 .reviews-section { padding: 80px 40px; text-align: center; }
