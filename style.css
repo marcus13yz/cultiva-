@@ -149,3 +149,41 @@ body { font-family: 'Inter', sans-serif; background-color: #FFF9EF; color: #263B
     .contact-section { padding: 40px 20px; }
     .contact-box { padding: 30px 20px; }
 }
+/* =========================================
+   CARROSSEL - O PROBLEMA
+   ========================================= */
+.carousel-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: #5d7763; /* Mantém a cor base do quadrado enquanto carrega */
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out; /* Efeito suave de transição */
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem preencha o quadrado sem distorcer */
+}
+/* Ajuste de tamanho para o carrossel dos cards da Horta */
+.card-carousel {
+    height: 200px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
