@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Login - Cultiva+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green-dark:  #1a2e1e;
+            --green-mid:   #263B2B;
+            --green-light: #A4D677;
+            --orange:      #FF8F50;
+            --cream:       #FFF9EF;
+            --text-muted:  #6b8f6b;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background-color: var(--green-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Soft radial glows */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 55% 45% at 15% 15%, rgba(164,214,119,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 45% 50% at 85% 85%, rgba(164,214,119,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Botanical SVG background */
+        .bg-leaves {
+            position: fixed;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            opacity: 0.16;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--cream);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 28px;
+            padding: 40px 32px 0;
+            position: relative;
+            z-index: 10;
+            box-shadow:
+                0 0 0 1px rgba(164,214,119,0.25),
+                0 28px 64px rgba(0,0,0,0.45),
+                0 8px 20px rgba(0,0,0,0.2);
+            animation: rise 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            overflow: hidden;
+        }
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(28px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Leaf corner decorations */
+        .leaf-tl {
+            position: absolute;
+            top: -10px; left: -10px;
+            width: 80px; height: 80px;
+            pointer-events: none;
+        }
+        .leaf-br {
+            position: absolute;
+            bottom: 48px; right: -10px;
+            width: 64px; height: 64px;
+            pointer-events: none;
+            transform: rotate(180deg);
+        }
+
+        /* ── Logo ── */
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+        .logo-dot {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, #5cb82a, var(--green-light));
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(92,184,42,0.35);
+        }
+        .logo-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--green-mid);
+            letter-spacing: -0.5px;
+        }
+        .logo-name span { color: #5cb82a; }
+
+        /* ── Heading ── */
+        .card-header { margin-bottom: 26px; }
+        .card-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.05rem;
+            font-weight: 900;
+            color: var(--green-mid);
+            line-height: 1.15;
+            letter-spacing: -0.8px;
+            margin-bottom: 6px;
+        }
+        .card-header h1 em {
+            font-style: italic;
+            color: var(--orange);
+        }
+        .card-header p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Divider ── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #cde8b0, transparent);
+            margin-bottom: 24px;
+        }
+
+        /* ── Fields ── */
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block;
+            font-size: 0.77rem;
+            font-weight: 600;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: var(--green-mid);
+            margin-bottom: 7px;
+        }
+        .field input {
+            width: 100%;
+            padding: 15px 16px;
+            border: 1.5px solid #d8ebb8;
+            border-radius: 13px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            background: #f4faed;
+            color: var(--green-mid);
+            transition: border-color 0.22s, box-shadow 0.22s, background 0.22s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .field input::placeholder { color: #aac99a; }
+        .field input:focus {
+            outline: none;
+            border-color: var(--green-light);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(164,214,119,0.2);
+        }
+
+        /* ── Forgot ── */
+        .forgot {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-top: -8px;
+            margin-bottom: 22px;
+            transition: color 0.2s;
+        }
+        .forgot:hover { color: var(--green-mid); }
+
+        /* ── Button ── */
+        .btn-submit {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #6dbd2e 0%, #a4d677 100%);
+            border: none;
+            border-radius: 14px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--green-dark);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.16s, box-shadow 0.16s;
+            box-shadow: 0 4px 0 #3d8010, 0 8px 20px rgba(109,189,46,0.28);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-submit:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #3d8010;
+        }
+        @media (hover: hover) {
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 0 #3d8010, 0 14px 28px rgba(109,189,46,0.38);
+            }
+        }
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -70%;
+            width: 38%; height: 200%;
+            background: rgba(255,255,255,0.22);
+            transform: skewX(-20deg);
+            animation: sheen 4s ease infinite;
+        }
+        @keyframes sheen {
+            0%   { left: -70%; }
+            50%  { left: 120%; }
+            100% { left: 120%; }
+        }
+
+        /* ── Footer inside card ── */
+        .card-body {
+            padding-bottom: 32px;
+        }
+        .card-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .link-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.86rem;
+            transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .link-back .arrow { transition: transform 0.2s; display: inline-block; }
+        .link-back:hover { color: var(--green-mid); }
+        .link-back:hover .arrow { transform: translateX(-3px); }
+
+        /* ── Bottom color strip ── */
+        .card-strip {
+            height: 5px;
+            background: linear-gradient(90deg, #6dbd2e, var(--orange) 50%, var(--green-light));
+            margin: 0 -0px;
+        }
+
+        /* ── Success overlay ── */
+        .success-screen {
+            position: absolute;
+            inset: 0;
+            background: var(--green-mid);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.38s;
+            z-index: 30;
+        }
+        .success-screen.show { opacity: 1; pointer-events: all; }
+        .success-screen .big-icon {
+            font-size: 3.8rem;
+            animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both 0.05s;
+        }
+        .success-screen p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--cream);
+        }
+        @keyframes pop {
+            from { transform: scale(0) rotate(-8deg); }
+            to   { transform: scale(1) rotate(0); }
+        }
+
+        /* ── Error shake ── */
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60%  { transform: translateX(-7px); }
+            40%,80%  { transform: translateX(7px); }
+        }
+        .shake { animation: shake 0.36s ease; }
+
+        /* ── Smaller phones ── */
+        @media (max-width: 380px) {
+            .card { padding: 32px 22px 0; border-radius: 22px; }
+            .card-header h1 { font-size: 1.8rem; }
+            .card-body { padding-bottom: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Botanical background -->
+<svg class="bg-leaves" viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <path d="M-40 60 Q70 -10 100 110 Q50 155 -40 60Z" fill="#A4D677"/>
+    <line x1="-40" y1="60" x2="40" y2="20" stroke="#A4D677" stroke-width="2"/>
+    <path d="M730 20 Q800 90 755 185 Q685 145 730 20Z" fill="#A4D677"/>
+    <line x1="730" y1="20" x2="760" y2="100" stroke="#A4D677" stroke-width="2"/>
+    <path d="M-30 680 Q55 600 110 700 Q65 778 -30 680Z" fill="#A4D677"/>
+    <line x1="-30" y1="680" x2="50" y2="720" stroke="#A4D677" stroke-width="2"/>
+    <path d="M760 640 Q830 680 808 768 Q735 762 760 640Z" fill="#A4D677"/>
+    <line x1="760" y1="640" x2="798" y2="700" stroke="#A4D677" stroke-width="2"/>
+    <path d="M370 -30 Q445 35 405 105 Q338 85 370 -30Z" fill="#78c43a"/>
+    <path d="M90 390 Q48 328 126 285 Q170 348 90 390Z" fill="#78c43a"/>
+    <line x1="90" y1="390" x2="118" y2="330" stroke="#78c43a" stroke-width="1.5"/>
+    <path d="M690 360 Q755 325 775 415 Q705 440 690 360Z" fill="#78c43a"/>
+    <line x1="690" y1="360" x2="740" y2="385" stroke="#78c43a" stroke-width="1.5"/>
+    <path d="M200 820 Q240 760 295 810 Q265 865 200 820Z" fill="#A4D677" opacity="0.7"/>
+    <path d="M550 860 Q600 800 650 845 Q625 895 550 860Z" fill="#A4D677" opacity="0.7"/>
+</svg>
+
+<div class="card" id="card">
+
+    <!-- SVG leaf corners -->
+    <svg class="leaf-tl" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 72 Q-8 32 28 4 Q62 -8 72 4 Q60 38 32 50 Q16 56 8 72Z" fill="#A4D677" opacity="0.5"/>
+        <line x1="8" y1="72" x2="42" y2="24" stroke="#78c43a" stroke-width="1.5" opacity="0.55"/>
+    </svg>
+    <svg class="leaf-br" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 58 Q-6 26 22 4 Q50 -6 58 4 Q48 30 26 40 Q13 45 6 58Z" fill="#A4D677" opacity="0.45"/>
+        <line x1="6" y1="58" x2="34" y2="20" stroke="#78c43a" stroke-width="1.2" opacity="0.5"/>
+    </svg>
+
+    <div class="card-body">
+        <!-- Logo -->
+        <div class="logo-area">
+            <div class="logo-dot">🌿</div>
+            <span class="logo-name">Cultiva<span>+</span></span>
+        </div>
+
+        <!-- Header -->
+        <div class="card-header">
+            <h1>Bem-vindo<br>de <em>volta.</em></h1>
+            <p>Acesse sua conta para continuar</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Form -->
+        <form id="loginForm" novalidate>
+            <div class="field">
+                <label for="email">E-mail</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="voce@ifmg.edu.br"
+                    required
+                    autocomplete="email"
+                    inputmode="email"
+                >
+            </div>
+
+            <div class="field">
+                <label for="password">Senha</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="••••••••"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <a href="#" class="forgot">Esqueceu a senha?</a>
+
+            <button type="submit" class="btn-submit">
+                Entrar na horta 🌱
+            </button>
+        </form>
+
+        <!-- Back link -->
+        <div class="card-footer">
+            <a href="index.html" class="link-back">
+                <span class="arrow">←</span> Voltar para o site
+            </a>
+        </div>
+    </div>
+
+    <!-- Color strip at bottom -->
+    <div class="card-strip"></div>
+
+    <!-- Success overlay -->
+    <div class="success-screen" id="successScreen">
+        <div class="big-icon">🌻</div>
+        <p>Bem-vindo à horta!</p>
+    </div>
+
+</div>
+
+<script>
+    const form    = document.getElementById('loginForm');
+    const card    = document.getElementById('card');
+    const success = document.getElementById('successScreen');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const pass  = document.getElementById('password').value;
+
+        if (!email || !pass) {
+            card.classList.remove('shake');
+            void card.offsetWidth;
+            card.classList.add('shake');
+            card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+            return;
+        }
+
+        success.classList.add('show');
+        setTimeout(() => {
+            alert('Você acessou o sistema com sucesso! (Modo Simulação)');
+            success.classList.remove('show');
+        }, 1800);
+    });
+</script>
+
+</body>
+</html>
