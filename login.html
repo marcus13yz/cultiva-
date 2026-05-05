@@ -227,13 +227,8 @@
         }
 
         /* ── Footer inside card ── */
-        .card-body {
-            padding-bottom: 32px;
-        }
-        .card-footer {
-            margin-top: 20px;
-            text-align: center;
-        }
+        .card-body { padding-bottom: 32px; }
+        .card-footer { margin-top: 20px; text-align: center; }
         .link-back {
             display: inline-flex;
             align-items: center;
@@ -280,6 +275,8 @@
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--cream);
+            text-align: center;
+            padding: 0 20px;
         }
         @keyframes pop {
             from { transform: scale(0) rotate(-8deg); }
@@ -294,7 +291,6 @@
         }
         .shake { animation: shake 0.36s ease; }
 
-        /* ── Smaller phones ── */
         @media (max-width: 380px) {
             .card { padding: 32px 22px 0; border-radius: 22px; }
             .card-header h1 { font-size: 1.8rem; }
@@ -304,7 +300,6 @@
 </head>
 <body>
 
-<!-- Botanical background -->
 <svg class="bg-leaves" viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
     <path d="M-40 60 Q70 -10 100 110 Q50 155 -40 60Z" fill="#A4D677"/>
     <line x1="-40" y1="60" x2="40" y2="20" stroke="#A4D677" stroke-width="2"/>
@@ -325,7 +320,6 @@
 
 <div class="card" id="card">
 
-    <!-- SVG leaf corners -->
     <svg class="leaf-tl" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 72 Q-8 32 28 4 Q62 -8 72 4 Q60 38 32 50 Q16 56 8 72Z" fill="#A4D677" opacity="0.5"/>
         <line x1="8" y1="72" x2="42" y2="24" stroke="#78c43a" stroke-width="1.5" opacity="0.55"/>
@@ -336,13 +330,11 @@
     </svg>
 
     <div class="card-body">
-        <!-- Logo -->
         <div class="logo-area">
             <div class="logo-dot">🌿</div>
             <span class="logo-name">Cultiva<span>+</span></span>
         </div>
 
-        <!-- Header -->
         <div class="card-header">
             <h1>Bem-vindo<br>de <em>volta.</em></h1>
             <p>Acesse sua conta para continuar</p>
@@ -350,29 +342,15 @@
 
         <div class="divider"></div>
 
-        <!-- Form -->
         <form id="loginForm" novalidate>
             <div class="field">
                 <label for="email">E-mail</label>
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="voce@ifmg.edu.br"
-                    required
-                    autocomplete="email"
-                    inputmode="email"
-                >
+                <input type="email" id="email" placeholder="exemplo@email.com" required autocomplete="email" inputmode="email">
             </div>
 
             <div class="field">
                 <label for="password">Senha</label>
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="••••••••"
-                    required
-                    autocomplete="current-password"
-                >
+                <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
             </div>
 
             <a href="#" class="forgot">Esqueceu a senha?</a>
@@ -382,7 +360,6 @@
             </button>
         </form>
 
-        <!-- Back link -->
         <div class="card-footer">
             <a href="index.html" class="link-back">
                 <span class="arrow">←</span> Voltar para o site
@@ -390,41 +367,98 @@
         </div>
     </div>
 
-    <!-- Color strip at bottom -->
     <div class="card-strip"></div>
 
-    <!-- Success overlay -->
     <div class="success-screen" id="successScreen">
         <div class="big-icon">🌻</div>
-        <p>Bem-vindo à horta!</p>
+        <p id="successMessage">Bem-vindo à horta!</p>
     </div>
 
 </div>
 
-<script>
-    const form    = document.getElementById('loginForm');
-    const card    = document.getElementById('card');
+<script type="module">
+    // 1. Importando o Firebase diretamente dos servidores do Google (CDN)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+    // 2. As suas Chaves do Projeto
+    const firebaseConfig = {
+        apiKey: "AIzaSyBwqCFSMUARO3YC2kGJgMJss2dqrBSKSyc",
+        authDomain: "cultiva-campus.firebaseapp.com",
+        projectId: "cultiva-campus",
+        storageBucket: "cultiva-campus.firebasestorage.app",
+        messagingSenderId: "71733554480",
+        appId: "1:71733554480:web:2c6d1941495a617c7f6cf5",
+        measurementId: "G-3WD252V8B2"
+    };
+
+    // 3. Inicializando o Sistema
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const form = document.getElementById('loginForm');
+    const card = document.getElementById('card');
     const success = document.getElementById('successScreen');
+    const successMessage = document.getElementById('successMessage');
 
     form.addEventListener('submit', (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Impede a página de recarregar
+        
         const email = document.getElementById('email').value.trim();
         const pass  = document.getElementById('password').value;
 
+        // Se estiver vazio, o card treme
         if (!email || !pass) {
-            card.classList.remove('shake');
-            void card.offsetWidth;
-            card.classList.add('shake');
-            card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+            triggerShake();
             return;
         }
 
-        success.classList.add('show');
-        setTimeout(() => {
-            alert('Você acessou o sistema com sucesso! (Modo Simulação)');
-            success.classList.remove('show');
-        }, 1800);
+        // TENTA FAZER O LOGIN
+        signInWithEmailAndPassword(auth, email, pass)
+            .then((userCredential) => {
+                // SUCESSO: A conta existe e a senha está correta
+                successMessage.innerHTML = "Bem-vindo de volta!<br>Sua horta te espera.";
+                success.classList.add('show');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Redireciona para o site
+                }, 2500);
+            })
+            .catch((error) => {
+                // SE DEU ERRO NO LOGIN: Pode ser que a conta não exista ou a senha esteja errada.
+                // A nossa "mágica": Vamos tentar criar a conta automaticamente!
+                
+                createUserWithEmailAndPassword(auth, email, pass)
+                    .then((userCredential) => {
+                        // SUCESSO AO CRIAR: Era um usuário novo!
+                        successMessage.innerHTML = "🎉 Conta criada!<br>Seu E-book foi enviado.";
+                        success.classList.add('show');
+                        
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 3500);
+                    })
+                    .catch((signUpError) => {
+                        // SE FALHOU AO CRIAR: O usuário já existe, ele só tinha digitado a SENHA ERRADA!
+                        if (signUpError.code === 'auth/email-already-in-use') {
+                            alert('❌ Senha incorreta. Tente novamente!');
+                        } else if (signUpError.code === 'auth/weak-password') {
+                            alert('❌ A senha deve ter pelo menos 6 caracteres!');
+                        } else {
+                            alert('❌ Erro: Verifique seu e-mail.');
+                        }
+                        triggerShake();
+                    });
+            });
     });
+
+    // Função para fazer o card tremer no erro
+    function triggerShake() {
+        card.classList.remove('shake');
+        void card.offsetWidth;
+        card.classList.add('shake');
+        card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+    }
 </script>
 
 </body>
