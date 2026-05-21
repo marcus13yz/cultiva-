@@ -1,3 +1,10 @@
+// --- 0. FORÇA O SITE A SEMPRE CARREGAR NO TOPO ---
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
+
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. FUNCIONAMENTO DO MENU MOBILE ---
@@ -10,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             navActions.classList.toggle('active');
         });
 
+        // Fecha o menu ao clicar em algum link (no celular)
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 navActions.classList.remove('active');
@@ -28,19 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (slides.length > 0) {
             // Cria uma função exclusiva para cada carrossel
             function changeSlide() {
+                // Esconde todas as fotos
                 slides.forEach(slide => slide.classList.remove('active'));
+                
+                // Pula para a próxima
                 slideIndex++;
                 
+                // Se chegou na última foto, volta para a primeira
                 if (slideIndex >= slides.length) { 
                     slideIndex = 0; 
                 }
                 
+                // Mostra a foto atual
                 slides[slideIndex].classList.add('active');
             }
 
-            // Inicia o temporizador (Muda a cada 3 segundos)
+            // Inicia o temporizador (Muda a foto a cada 3 segundos)
             setInterval(changeSlide, 3000);
         }
     });
-
 });
